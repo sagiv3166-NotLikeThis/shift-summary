@@ -1,5 +1,5 @@
 /* © Sagiv Mezeg — service worker for offline use */
-const CACHE = 'shift-summary-v2';
+const CACHE = 'shift-summary-v4';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png',
@@ -13,6 +13,17 @@ self.addEventListener('activate', e => {
 });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  // config.js: always try network first so endpoint edits take effect
+  if (e.request.url.indexOf('config.js') > -1) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
       const copy = res.clone();
