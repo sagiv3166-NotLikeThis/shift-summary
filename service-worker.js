@@ -1,5 +1,5 @@
 /* © Sagiv Mezeg — service worker for offline use */
-const CACHE = 'shift-summary-v4';
+const CACHE = 'shift-summary-v8';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png',
